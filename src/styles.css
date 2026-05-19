@@ -548,6 +548,9 @@ h1 {
 }
 
 .impact-card:not(.is-front) {
+  background:
+    linear-gradient(135deg, rgba(232, 160, 32, 0.2), rgba(245, 237, 214, 0.88)),
+    repeating-linear-gradient(45deg, rgba(26, 140, 122, 0.18) 0 8px, transparent 8px 20px);
   pointer-events: none;
 }
 
@@ -572,8 +575,8 @@ h1 {
 
 .impact-badge {
   display: inline-grid;
-  width: 58px;
-  height: 58px;
+  width: 64px;
+  height: 64px;
   flex: 0 0 auto;
   place-items: center;
   border: 3px solid rgba(13, 27, 42, 0.12);
@@ -602,7 +605,7 @@ h1 {
   margin: 2rem 0 0;
   color: var(--navy);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(1.75rem, 5vw, 2.7rem);
+  font-size: clamp(1.7rem, 5vw, 2.55rem);
   font-weight: 800;
   line-height: 1.12;
 }
@@ -617,15 +620,15 @@ h1 {
   min-height: 44px;
   border: 1px solid rgba(245, 237, 214, 0.4);
   border-radius: 6px;
-  background: rgba(245, 237, 214, 0.08);
-  color: var(--cream);
-  padding: 0.7rem 1rem;
+  background: var(--gold);
+  color: var(--navy);
+  padding: 0.72rem 1.45rem;
   font-weight: 850;
 }
 
 .impact-actions button:hover,
 .impact-actions button:focus-visible {
-  background: var(--gold);
+  background: var(--cream);
   color: var(--navy);
 }
 

@@ -416,21 +416,14 @@ function ImpactSwipeStack() {
     setCards(([frontCard, ...remainingCards]) => [...remainingCards, frontCard]);
   };
 
-  const moveBackToFront = () => {
-    setCards((currentCards) => {
-      const lastCard = currentCards[currentCards.length - 1];
-      return [lastCard, ...currentCards.slice(0, -1)];
-    });
-  };
-
   return (
     <div className="impact-layout">
       <div className="impact-copy">
         <p className="eyebrow gold-text">Why It Matters</p>
-        <h2>Language becomes real when a child can press play.</h2>
+        <h2>Little voices should hear home.</h2>
         <p>
-          These are not generic testimonials. They are the voices Hazina is being built around: families, artists, and
-          partners who know that culture survives when children can see it, hear it, and sing it back.
+          Hazina is for the child singing along, the parent smiling from the sofa, and the artist making a world that
+          sounds like home.
         </p>
       </div>
       <div className="impact-controls">
@@ -446,11 +439,8 @@ function ImpactSwipeStack() {
           ))}
         </div>
         <div className="impact-actions" aria-label="Impact card controls">
-          <button type="button" onClick={moveBackToFront}>
-            Previous
-          </button>
           <button type="button" onClick={moveFrontToBack}>
-            Next
+            Swap
           </button>
         </div>
       </div>
@@ -498,16 +488,20 @@ function ImpactStoryCard({
       aria-hidden={!isFront}
       aria-label={`${card.role} impact story: ${card.quote}`}
     >
-      <div className="impact-card-header">
-        <span className="impact-badge" aria-hidden="true">
-          {card.initials}
-        </span>
-        <div>
-          <p>{card.role}</p>
-          <span>Swipe or use next</span>
-        </div>
-      </div>
-      {isFront && <blockquote>{card.quote}</blockquote>}
+      {isFront && (
+        <>
+          <div className="impact-card-header">
+            <span className="impact-badge" aria-hidden="true">
+              {card.initials}
+            </span>
+            <div>
+              <p>{card.role}</p>
+              <span>Swipe or tap Swap</span>
+            </div>
+          </div>
+          <blockquote>{card.quote}</blockquote>
+        </>
+      )}
     </motion.article>
   );
 }
