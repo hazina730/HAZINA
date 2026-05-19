@@ -1,4 +1,5 @@
 import { FormEvent, MouseEvent, ReactNode, useEffect, useMemo, useState } from "react";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
 const productionOrigin = "https://hazina730.github.io";
@@ -19,6 +20,30 @@ const navItems = [
   { label: "For Creators", path: "/creators" },
   { label: "For Partners", path: "/partners" },
   { label: "Contact", path: "/contact" },
+];
+
+type ImpactCard = {
+  role: "Parent" | "Creator" | "Partner";
+  quote: string;
+  initials: string;
+};
+
+const impactCards: ImpactCard[] = [
+  {
+    role: "Parent",
+    quote: "I want my child to hear our language before it disappears.",
+    initials: "PA",
+  },
+  {
+    role: "Creator",
+    quote: "Hazina gives Kenyan artists a platform to create stories, songs, and characters for our own children.",
+    initials: "CR",
+  },
+  {
+    role: "Partner",
+    quote: "One episode can put one Kenyan language on screen for the next generation.",
+    initials: "PT",
+  },
 ];
 
 type PageKey = "home" | "about" | "channel" | "creators" | "partners" | "contact";
@@ -384,6 +409,108 @@ function FeatureCard({ title, children }: { title: string; children: ReactNode }
   );
 }
 
+function ImpactSwipeStack() {
+  const [cards, setCards] = useState<ImpactCard[]>(impactCards);
+
+  const moveFrontToBack = () => {
+    setCards(([frontCard, ...remainingCards]) => [...remainingCards, frontCard]);
+  };
+
+  const moveBackToFront = () => {
+    setCards((currentCards) => {
+      const lastCard = currentCards[currentCards.length - 1];
+      return [lastCard, ...currentCards.slice(0, -1)];
+    });
+  };
+
+  return (
+    <div className="impact-layout">
+      <div className="impact-copy">
+        <p className="eyebrow gold-text">Why It Matters</p>
+        <h2>Language becomes real when a child can press play.</h2>
+        <p>
+          These are not generic testimonials. They are the voices Hazina is being built around: families, artists, and
+          partners who know that culture survives when children can see it, hear it, and sing it back.
+        </p>
+      </div>
+      <div className="impact-controls">
+        <div className="impact-stack" aria-label="Hazina impact story cards" aria-live="polite">
+          {cards.map((card, index) => (
+            <ImpactStoryCard
+              key={card.role}
+              card={card}
+              stackIndex={index}
+              isFront={index === 0}
+              onSwipeAway={moveFrontToBack}
+            />
+          ))}
+        </div>
+        <div className="impact-actions" aria-label="Impact card controls">
+          <button type="button" onClick={moveBackToFront}>
+            Previous
+          </button>
+          <button type="button" onClick={moveFrontToBack}>
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ImpactStoryCard({
+  card,
+  stackIndex,
+  isFront,
+  onSwipeAway,
+}: {
+  card: ImpactCard;
+  stackIndex: number;
+  isFront: boolean;
+  onSwipeAway: () => void;
+}) {
+  const x = useMotionValue(0);
+  const rotate = useTransform(x, [-180, 180], [-8, 8]);
+  const opacity = useTransform(x, [-220, 0, 220], [0.82, 1, 0.82]);
+  const stackOffset = stackIndex * 14;
+
+  return (
+    <motion.article
+      className={isFront ? "impact-card is-front" : "impact-card"}
+      drag={isFront ? "x" : false}
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={0.65}
+      onDragEnd={(_, info) => {
+        if (isFront && Math.abs(info.offset.x) > 90) onSwipeAway();
+      }}
+      style={{
+        x: isFront ? x : 0,
+        rotate: isFront ? rotate : 0,
+        opacity: isFront ? opacity : 1,
+        zIndex: impactCards.length - stackIndex,
+      }}
+      animate={{
+        y: stackOffset,
+        scale: 1 - stackIndex * 0.045,
+      }}
+      transition={{ type: "spring", stiffness: 230, damping: 26 }}
+      tabIndex={0}
+      aria-label={`${card.role} impact story: ${card.quote}`}
+    >
+      <div className="impact-card-header">
+        <span className="impact-badge" aria-hidden="true">
+          {card.initials}
+        </span>
+        <div>
+          <p>{card.role}</p>
+          <span>{isFront ? "Swipe or use next" : "Impact story"}</span>
+        </div>
+      </div>
+      <blockquote>{card.quote}</blockquote>
+    </motion.article>
+  );
+}
+
 function PartnerCard({ title, children }: { title: string; children: ReactNode }) {
   return (
     <article className="partner-card">
@@ -616,6 +743,10 @@ function HomePage() {
             Preserving Kenya's languages and ways of thinking for the generation that will build the African Century.
           </FeatureCard>
         </div>
+      </Section>
+
+      <Section tone="navy" className="impact-section">
+        <ImpactSwipeStack />
       </Section>
 
       <Section tone="white" eyebrow="Featured video" title="Start with hello.">
