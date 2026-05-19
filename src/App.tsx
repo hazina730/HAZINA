@@ -495,6 +495,7 @@ function ImpactStoryCard({
       }}
       transition={{ type: "spring", stiffness: 230, damping: 26 }}
       tabIndex={0}
+      aria-hidden={!isFront}
       aria-label={`${card.role} impact story: ${card.quote}`}
     >
       <div className="impact-card-header">
@@ -503,10 +504,10 @@ function ImpactStoryCard({
         </span>
         <div>
           <p>{card.role}</p>
-          <span>{isFront ? "Swipe or use next" : "Impact story"}</span>
+          <span>Swipe or use next</span>
         </div>
       </div>
-      <blockquote>{card.quote}</blockquote>
+      {isFront && <blockquote>{card.quote}</blockquote>}
     </motion.article>
   );
 }

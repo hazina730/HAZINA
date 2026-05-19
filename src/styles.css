@@ -520,12 +520,12 @@ h1 {
 
 .impact-controls {
   display: grid;
-  gap: 1rem;
+  gap: 1.35rem;
 }
 
 .impact-stack {
   position: relative;
-  min-height: 330px;
+  min-height: 420px;
   touch-action: pan-y;
 }
 
@@ -544,6 +544,11 @@ h1 {
   color: var(--navy);
   padding: clamp(1.15rem, 5vw, 2rem);
   transform-origin: center bottom;
+  overflow: hidden;
+}
+
+.impact-card:not(.is-front) {
+  pointer-events: none;
 }
 
 .impact-card:focus-visible {
@@ -594,12 +599,12 @@ h1 {
 }
 
 .impact-card blockquote {
-  margin: 2.5rem 0 0;
+  margin: 2rem 0 0;
   color: var(--navy);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(1.75rem, 7vw, 3.2rem);
+  font-size: clamp(1.75rem, 5vw, 2.7rem);
   font-weight: 800;
-  line-height: 1.08;
+  line-height: 1.12;
 }
 
 .impact-actions {
@@ -970,11 +975,11 @@ h1 {
   }
 
   .impact-stack {
-    min-height: 390px;
+    min-height: 430px;
   }
 
   .impact-card {
-    min-height: 350px;
+    min-height: 360px;
   }
 
   .card-grid.four {
