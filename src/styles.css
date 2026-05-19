@@ -143,7 +143,7 @@ a {
 }
 
 .nav-link,
-.footer-links button {
+.footer-links a {
   min-height: 44px;
   border: 0;
   border-radius: 6px;
@@ -443,6 +443,13 @@ h1 {
   font-weight: 800;
 }
 
+.source-note {
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
 .card-grid.three,
 .card-grid.four {
   grid-template-columns: 1fr;
@@ -665,6 +672,13 @@ h1 {
   font-weight: 800;
 }
 
+.form-privacy {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
 .form-status,
 .form-success {
   margin: 0;
@@ -715,9 +729,10 @@ h1 {
   gap: 0.35rem;
 }
 
-.footer-links button {
+.footer-links a {
   color: rgba(245, 237, 214, 0.86);
   padding-left: 0;
+  text-decoration: none;
 }
 
 .copyright {

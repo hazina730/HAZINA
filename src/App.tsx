@@ -1,8 +1,15 @@
-import { FormEvent, ReactNode, useEffect, useMemo, useState } from "react";
+import { FormEvent, MouseEvent, ReactNode, useEffect, useMemo, useState } from "react";
 
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+const productionOrigin = "https://hazina730.github.io";
+
+// TODO: Add analytics and conversion tracking once the production measurement stack is chosen.
+// TODO: Replace placeholder channel URL when the final Hazina YouTube handle exists.
 const youtubeUrl = "https://www.youtube.com/@Hazina";
+// TODO: Replace placeholder social links with final Hazina profiles.
 const instagramUrl = "https://www.instagram.com/hazina";
 const tiktokUrl = "https://www.tiktok.com/@hazina";
+// TODO: Replace placeholder email if the production inbox changes.
 const contactEmail = "hello@hazina.co.ke";
 
 const navItems = [
@@ -30,9 +37,9 @@ type FormErrors = Record<string, string>;
 
 const pageMeta: Record<PageKey, { title: string; description: string }> = {
   home: {
-    title: "Hazina - Your Language. Your Treasure.",
+    title: "Hazina — Your Language. Your Treasure.",
     description:
-      "Kenya's first animated cultural platform for children, sharing songs, stories, and rhymes in Kenya's indigenous languages.",
+      "Kenya’s first animated cultural platform for children, sharing songs, stories, and rhymes in Kenya’s indigenous languages.",
   },
   about: {
     title: "About Hazina - Where Kenya's Children Find Themselves",
@@ -78,11 +85,13 @@ function App() {
     updateMeta("description", meta.description);
     updateOg("og:title", meta.title);
     updateOg("og:description", meta.description);
-  }, [page]);
+    updateCanonical(path);
+  }, [page, path]);
 
   const navigate = (nextPath: string) => {
-    window.history.pushState({}, "", nextPath);
-    setPath(normalizePath(nextPath));
+    const normalized = normalizePath(nextPath);
+    window.history.pushState({}, "", getInternalHref(normalized));
+    setPath(normalized);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -91,7 +100,7 @@ function App() {
       <SkipLink />
       <Header currentPath={path} onNavigate={navigate} />
       <main id="main-content">
-        {page === "home" && <HomePage onNavigate={navigate} />}
+        {page === "home" && <HomePage />}
         {page === "about" && <AboutPage />}
         {page === "channel" && <ChannelPage />}
         {page === "creators" && <CreatorsPage />}
@@ -104,8 +113,15 @@ function App() {
 }
 
 function normalizePath(path: string) {
-  const clean = path.replace(/\/+$/, "");
+  const withoutBase =
+    basePath && (path === basePath || path.startsWith(`${basePath}/`)) ? path.slice(basePath.length) || "/" : path;
+  const clean = withoutBase.replace(/\/+$/, "");
   return clean === "" ? "/" : clean;
+}
+
+function getInternalHref(path: string) {
+  const normalized = normalizePath(path);
+  return `${basePath}${normalized === "/" ? "/" : normalized}`;
 }
 
 function routeToPage(path: string): PageKey {
@@ -127,6 +143,18 @@ function updateOg(property: string, content: string) {
   if (element) element.content = content;
 }
 
+function updateCanonical(path: string) {
+  const href = `${productionOrigin}${getInternalHref(path)}`;
+  let element = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+  if (!element) {
+    element = document.createElement("link");
+    element.rel = "canonical";
+    document.head.appendChild(element);
+  }
+  element.href = href;
+  updateOg("og:url", href);
+}
+
 function SkipLink() {
   return (
     <a className="skip-link" href="#main-content">
@@ -143,8 +171,28 @@ function Header({
   onNavigate: (path: string) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(() => window.matchMedia("(min-width: 900px)").matches);
+  const menuId = "main-navigation-menu";
 
-  const go = (path: string) => {
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 900px)");
+    const onChange = () => setIsDesktop(media.matches);
+    onChange();
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, []);
+
+  const go = (path: string, event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+    event.preventDefault();
     setOpen(false);
     onNavigate(path);
   };
@@ -152,30 +200,37 @@ function Header({
   return (
     <header className="site-header">
       <nav className="nav-wrap" aria-label="Main navigation">
-        <button className="brand-link" onClick={() => go("/")} aria-label="Hazina home">
+        <a className="brand-link" href={getInternalHref("/")} onClick={(event) => go("/", event)} aria-label="Hazina home">
           HAZINA
-        </button>
+        </a>
         <button
           className="menu-toggle"
           type="button"
           aria-label="Toggle navigation menu"
           aria-expanded={open}
+          aria-controls={menuId}
           onClick={() => setOpen((value) => !value)}
         >
           <span />
           <span />
           <span />
         </button>
-        <div className={open ? "nav-panel is-open" : "nav-panel"}>
+        <div
+          id={menuId}
+          className={open ? "nav-panel is-open" : "nav-panel"}
+          aria-hidden={!open && !isDesktop}
+          inert={!open && !isDesktop ? true : undefined}
+        >
           <div className="nav-links">
             {navItems.map((item) => (
-              <button
+              <a
                 key={item.path}
                 className={currentPath === item.path ? "nav-link is-active" : "nav-link"}
-                onClick={() => go(item.path)}
+                href={getInternalHref(item.path)}
+                onClick={(event) => go(item.path, event)}
               >
                 {item.label}
-              </button>
+              </a>
             ))}
           </div>
           <Button href={youtubeUrl} variant="gold" external>
@@ -188,6 +243,12 @@ function Header({
 }
 
 function Footer({ onNavigate }: { onNavigate: (path: string) => void }) {
+  const go = (path: string, event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+    event.preventDefault();
+    onNavigate(path);
+  };
+
   return (
     <footer className="footer">
       <div className="footer-inner">
@@ -198,9 +259,9 @@ function Footer({ onNavigate }: { onNavigate: (path: string) => void }) {
         </div>
         <nav className="footer-links" aria-label="Footer navigation">
           {navItems.map((item) => (
-            <button key={item.path} onClick={() => onNavigate(item.path)}>
+            <a key={item.path} href={getInternalHref(item.path)} onClick={(event) => go(item.path, event)}>
               {item.label}
-            </button>
+            </a>
           ))}
         </nav>
         <div className="social-links">
@@ -345,6 +406,7 @@ function PlaylistCard({ title, copy }: { title: string; copy: string }) {
 }
 
 function TeamCard({ name, role, bio }: { name: string; role: string; bio: string }) {
+  // TODO: Replace placeholder team images and bios with real founder/team details.
   return (
     <article className="team-card">
       <div className="team-photo" role="img" aria-label={`${name} placeholder portrait`} />
@@ -364,6 +426,7 @@ function VideoEmbedPlaceholder({
   caption?: string;
   large?: boolean;
 }) {
+  // TODO: Replace this placeholder with the real YouTube embed URL when the pilot video is published.
   return (
     <div className={large ? "video-block video-large" : "video-block"}>
       <div className="video-frame" role="img" aria-label={`${title} video placeholder`}>
@@ -473,6 +536,7 @@ function ContactForm({
       })}
       {status === "success" && <p className="form-success">{successMessage}</p>}
       {status === "error" && <p className="form-error form-status">Please check the required fields.</p>}
+      <p className="form-privacy">We'll only use your details to respond to your enquiry. No spam.</p>
       <Button type="submit" variant="gold">
         {submitLabel}
       </Button>
@@ -501,7 +565,7 @@ function validateFields(fields: FieldConfig[], values: FormState) {
   return errors;
 }
 
-function HomePage({ onNavigate }: { onNavigate: (path: string) => void }) {
+function HomePage() {
   return (
     <>
       <section className="home-hero pattern-field">
@@ -513,7 +577,7 @@ function HomePage({ onNavigate }: { onNavigate: (path: string) => void }) {
             <Button href={youtubeUrl} variant="gold" external>
               Watch on YouTube
             </Button>
-            <Button variant="outline" onClick={() => onNavigate("/partners")}>
+            <Button href={getInternalHref("/partners")} variant="outline">
               Partner With Us
             </Button>
           </div>
@@ -534,6 +598,10 @@ function HomePage({ onNavigate }: { onNavigate: (path: string) => void }) {
           <StatCard value="80%+" label="children under 12 watch YouTube" />
           <StatCard value="18M+" label="active streaming users in Kenya" />
         </div>
+        <p className="source-note">
+          Sources include SOAS language research, UNESCO language classifications, and public digital media usage
+          estimates. Final citations to be confirmed before launch.
+        </p>
       </Section>
 
       <Section eyebrow="What is Hazina" title="A cultural platform made for the children building tomorrow.">
@@ -654,6 +722,7 @@ function ChannelPage() {
           <VideoEmbedPlaceholder title="Latest Hazina video" large />
           <aside className="subscriber-panel">
             <span>Subscriber count</span>
+            {/* TODO: Replace placeholder subscriber count with a real YouTube API value. */}
             <strong>Coming soon</strong>
             <p>Replace this with the live YouTube count when the channel API is connected.</p>
             <Button href={youtubeUrl} variant="gold" external>
