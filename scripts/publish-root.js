@@ -1,4 +1,4 @@
-import { copyFileSync, cpSync, mkdirSync } from "node:fs";
+import { copyFileSync, cpSync, mkdirSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
 
 const routes = ["about", "channel", "creators", "partners", "contact"];
@@ -10,9 +10,11 @@ copyFileSync(resolve("dist/og-hazina-placeholder.svg"), resolve("og-hazina-place
 copyFileSync(resolve("dist/robots.txt"), resolve("robots.txt"));
 copyFileSync(resolve("dist/sitemap.xml"), resolve("sitemap.xml"));
 
+rmSync(resolve("assets"), { recursive: true, force: true });
 cpSync(resolve("dist/assets"), resolve("assets"), { recursive: true });
 
 for (const route of routes) {
+  rmSync(resolve(route), { recursive: true, force: true });
   mkdirSync(resolve(route), { recursive: true });
   copyFileSync(resolve("dist", route, "index.html"), resolve(route, "index.html"));
 }

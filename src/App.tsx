@@ -1,5 +1,6 @@
 import { FormEvent, MouseEvent, ReactNode, useEffect, useMemo, useState } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
+import ContainerScrollAnimation from "./components/ContainerScrollAnimation";
 
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
 const productionOrigin = "https://hazina730.github.io";
@@ -274,28 +275,68 @@ function Footer({ onNavigate }: { onNavigate: (path: string) => void }) {
     onNavigate(path);
   };
 
+  const backToTop = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <footer className="footer">
-      <div className="footer-inner">
-        <div>
-          <div className="footer-wordmark">HAZINA</div>
-          <p>Your language. Your treasure.</p>
-          <p className="footer-small">Built for Kenya's children, languages, and future.</p>
+      <div className="footer-cta">
+        <p>The treasures of our past must not be buried. They must be uploaded.</p>
+        <div className="footer-cta-actions" aria-label="Footer calls to action">
+          <a className="footer-cta-button footer-cta-button-gold" href={youtubeUrl}>
+            Watch on YouTube
+          </a>
+          <a className="footer-cta-button" href={getInternalHref("/partners")} onClick={(event) => go("/partners", event)}>
+            Partner With Us
+          </a>
         </div>
+      </div>
+
+      <div className="footer-inner">
+        <section className="footer-brand" aria-label="Hazina">
+          <a className="footer-wordmark" href={getInternalHref("/")} onClick={(event) => go("/", event)}>
+            HAZINA
+          </a>
+          <p className="footer-tagline">Your language. Your treasure.</p>
+          <p>Animated songs, rhymes, and stories in Kenya's indigenous languages.</p>
+        </section>
+
         <nav className="footer-links" aria-label="Footer navigation">
+          <h2>Explore</h2>
           {navItems.map((item) => (
             <a key={item.path} href={getInternalHref(item.path)} onClick={(event) => go(item.path, event)}>
               {item.label}
             </a>
           ))}
         </nav>
-        <div className="social-links">
-          <a href={youtubeUrl}>YouTube</a>
-          <a href={instagramUrl}>Instagram</a>
-          <a href={tiktokUrl}>TikTok</a>
-        </div>
+
+        <section className="footer-connect" aria-labelledby="footer-connect-title">
+          <h2 id="footer-connect-title">Connect</h2>
+          <a className="footer-email" href={`mailto:${contactEmail}`}>
+            {contactEmail}
+          </a>
+          <div className="social-links" aria-label="Social links">
+            <a href={youtubeUrl}>YouTube</a>
+            <a href={instagramUrl}>Instagram</a>
+            <a href={tiktokUrl}>TikTok</a>
+          </div>
+        </section>
+
+        <section className="footer-mission" aria-labelledby="footer-mission-title">
+          <h2 id="footer-mission-title">Mission</h2>
+          <p>&ldquo;Where Kenya's children find themselves.&rdquo;</p>
+        </section>
       </div>
-      <p className="copyright">Copyright {new Date().getFullYear()} Hazina. All rights reserved.</p>
+
+      <div className="footer-bottom">
+        <p>&copy; {new Date().getFullYear()} Hazina.</p>
+        <p>Built for Kenya's children, languages, and future.</p>
+        <a href="#main-content" onClick={backToTop}>
+          Back to top ↑
+        </a>
+      </div>
     </footer>
   );
 }
@@ -503,6 +544,60 @@ function ImpactStoryCard({
         </>
       )}
     </motion.article>
+  );
+}
+
+function HazinaChannelExperienceSection() {
+  return (
+    <ContainerScrollAnimation
+      titleComponent={
+        <>
+          <p className="eyebrow">The channel experience</p>
+          <h2>Watch Hazina come alive.</h2>
+          <p>
+            A child presses play. A greeting becomes a song. A language becomes a world they can see, hear, and
+            remember.
+          </p>
+        </>
+      }
+    >
+      <HazinaPreviewScreen />
+    </ContainerScrollAnimation>
+  );
+}
+
+function HazinaPreviewScreen() {
+  const previewTiles = ["Songs", "Stories", "Greetings"];
+
+  return (
+    <article className="hazina-preview-screen" aria-label="Mock Hazina YouTube pilot episode preview">
+      <div className="hazina-preview-pattern pattern-one" aria-hidden="true" />
+      <div className="hazina-preview-pattern pattern-two" aria-hidden="true" />
+      <div className="hazina-preview-header">
+        <div>
+          <p>Pilot episode preview</p>
+          <h3>Hello in all 42 Kenyan languages</h3>
+        </div>
+        <button className="hazina-preview-play" type="button" aria-label="Preview play button for Hazina pilot mockup">
+          <span aria-hidden="true" />
+        </button>
+      </div>
+      <div className="hazina-preview-stage" aria-hidden="true">
+        <div className="hazina-preview-sun" />
+        <div className="hazina-preview-character">
+          <span />
+        </div>
+        <div className="hazina-preview-caption">Jambo. Niaje. Ber ahinya.</div>
+      </div>
+      <div className="hazina-preview-grid">
+        {previewTiles.map((tile) => (
+          <div className="hazina-preview-tile" key={tile}>
+            <span aria-hidden="true" />
+            <p>{tile}</p>
+          </div>
+        ))}
+      </div>
+    </article>
   );
 }
 
@@ -743,6 +838,8 @@ function HomePage() {
       <Section tone="navy" className="impact-section">
         <ImpactSwipeStack />
       </Section>
+
+      <HazinaChannelExperienceSection />
 
       <Section tone="white" eyebrow="Featured video" title="Start with hello.">
         <div className="featured-video-layout">
