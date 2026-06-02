@@ -6,12 +6,12 @@ const productionOrigin = "https://hazina730.github.io";
 
 // TODO: Add analytics and conversion tracking once the production measurement stack is chosen.
 // TODO: Replace placeholder channel URL when the final Hazina YouTube handle exists.
-const youtubeUrl = "https://www.youtube.com/@Hazina";
+const youtubeUrl = "https://www.youtube.com/@HazinaHAZINA-kids";
 // TODO: Replace placeholder social links with final Hazina profiles.
 const instagramUrl = "https://www.instagram.com/hazina";
 const tiktokUrl = "https://www.tiktok.com/@hazina";
 // TODO: Replace placeholder email if the production inbox changes.
-const contactEmail = "hello@hazina.co.ke";
+const contactEmail = "hazinakids@gmail.com";
 
 const navItems = [
   { label: "Home", path: "/" },
