@@ -318,9 +318,18 @@ function Footer({ onNavigate }: { onNavigate: (path: string) => void }) {
             {contactEmail}
           </a>
           <div className="social-links" aria-label="Social links">
-            <a href={youtubeUrl}>YouTube</a>
-            <a href={instagramUrl}>Instagram</a>
-            <a href={tiktokUrl}>TikTok</a>
+            <a href={youtubeUrl} aria-label="Hazina Kids on YouTube">
+              <SocialLogo type="youtube" />
+              <span>YouTube</span>
+            </a>
+            <a href={instagramUrl} aria-label="Hazina on Instagram">
+              <SocialLogo type="instagram" />
+              <span>Instagram</span>
+            </a>
+            <a href={tiktokUrl} aria-label="Hazina on TikTok">
+              <SocialLogo type="tiktok" />
+              <span>TikTok</span>
+            </a>
           </div>
         </section>
 
@@ -338,6 +347,30 @@ function Footer({ onNavigate }: { onNavigate: (path: string) => void }) {
         </a>
       </div>
     </footer>
+  );
+}
+
+function SocialLogo({ type }: { type: "youtube" | "instagram" | "tiktok" }) {
+  if (type === "youtube") {
+    return (
+      <svg className="social-logo" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M21.58 7.18a2.76 2.76 0 0 0-1.94-1.96C17.93 4.75 12 4.75 12 4.75s-5.93 0-7.64.47a2.76 2.76 0 0 0-1.94 1.96A28.92 28.92 0 0 0 2 12a28.92 28.92 0 0 0 .42 4.82 2.76 2.76 0 0 0 1.94 1.96c1.71.47 7.64.47 7.64.47s5.93 0 7.64-.47a2.76 2.76 0 0 0 1.94-1.96A28.92 28.92 0 0 0 22 12a28.92 28.92 0 0 0-.42-4.82ZM10 15.35v-6.7L15.75 12 10 15.35Z" />
+      </svg>
+    );
+  }
+
+  if (type === "instagram") {
+    return (
+      <svg className="social-logo" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M7.8 2.75h8.4A5.06 5.06 0 0 1 21.25 7.8v8.4a5.06 5.06 0 0 1-5.05 5.05H7.8a5.06 5.06 0 0 1-5.05-5.05V7.8A5.06 5.06 0 0 1 7.8 2.75Zm0 1.8A3.25 3.25 0 0 0 4.55 7.8v8.4a3.25 3.25 0 0 0 3.25 3.25h8.4a3.25 3.25 0 0 0 3.25-3.25V7.8a3.25 3.25 0 0 0-3.25-3.25H7.8Zm4.2 3.32a4.13 4.13 0 1 1 0 8.26 4.13 4.13 0 0 1 0-8.26Zm0 1.8a2.33 2.33 0 1 0 0 4.66 2.33 2.33 0 0 0 0-4.66Zm4.46-2.86a.96.96 0 1 1 0 1.92.96.96 0 0 1 0-1.92Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg className="social-logo" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M15.7 2.75c.22 1.86 1.25 3.02 3.1 3.15v3.12a6.1 6.1 0 0 1-3.05-.88v5.78c0 4.03-2.2 6.33-5.55 6.33a5.12 5.12 0 0 1-5.1-5.19c0-3.18 2.33-5.31 5.76-5.31.29 0 .53.02.74.06v3.26a3.5 3.5 0 0 0-.88-.1 2.02 2.02 0 0 0-2.23 2.02 1.97 1.97 0 0 0 2.01 2.04c1.25 0 2.05-.8 2.05-2.42V2.75h3.15Z" />
+    </svg>
   );
 }
 
@@ -649,17 +682,19 @@ function VideoEmbedPlaceholder({
   return (
     <div className={large ? "video-block video-large" : "video-block"}>
       {embedUrl ? (
-        <div className="video-frame video-frame-embed">
-          <iframe
-            title={title}
-            src={embedUrl}
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-          />
+        <div className="video-embed-card">
+          <div className="video-frame video-frame-embed">
+            <iframe
+              title={title}
+              src={embedUrl}
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
+          </div>
           <a className="video-channel-link" href={youtubeUrl}>
-            Open Hazina Kids on YouTube
+            Watch on Hazina Kids YouTube
           </a>
         </div>
       ) : (
@@ -818,7 +853,7 @@ function HomePage() {
           </div>
         </div>
         <div className="hero-video-wrap reveal">
-          <VideoEmbedPlaceholder title="Hazina Kids YouTube channel" embedUrl={youtubeUploadsEmbedUrl} large />
+          <VideoEmbedPlaceholder title="Hello From Every Corner of Kenya" embedUrl={youtubeUploadsEmbedUrl} large />
         </div>
       </section>
 
@@ -862,7 +897,7 @@ function HomePage() {
       <Section tone="white" eyebrow="Featured video" title="Start with hello.">
         <div className="featured-video-layout">
           <VideoEmbedPlaceholder
-            title="Hello in all 42 Kenyan languages"
+            title="Hello From Every Corner of Kenya"
             caption="Watch our first episode - hello in all 42 Kenyan languages."
             embedUrl={youtubeUploadsEmbedUrl}
             large

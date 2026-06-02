@@ -306,11 +306,22 @@ h1 {
 }
 
 .hero-video-wrap {
-  align-self: stretch;
+  align-self: center;
+  width: 100%;
 }
 
 .video-block {
   width: 100%;
+}
+
+.home-hero .video-block {
+  max-width: 640px;
+  margin-inline: auto;
+}
+
+.video-embed-card {
+  display: grid;
+  gap: 0.8rem;
 }
 
 .video-frame {
@@ -330,12 +341,12 @@ h1 {
 }
 
 .video-frame-embed {
-  position: relative;
   overflow: hidden;
   display: block;
   min-height: 0;
   aspect-ratio: 16 / 9;
   padding: 0;
+  background: #05080c;
 }
 
 .video-frame-embed iframe {
@@ -346,13 +357,12 @@ h1 {
 }
 
 .video-channel-link {
-  position: absolute;
-  right: 0.85rem;
-  bottom: 0.85rem;
+  justify-self: end;
   border-radius: 999px;
-  background: rgba(13, 27, 42, 0.84);
-  color: var(--cream);
-  padding: 0.58rem 0.85rem;
+  border: 1px solid rgba(232, 160, 32, 0.42);
+  background: rgba(245, 237, 214, 0.08);
+  color: rgba(245, 237, 214, 0.9);
+  padding: 0.64rem 0.95rem;
   font-size: 0.9rem;
   font-weight: 850;
   text-decoration: none;
@@ -1326,9 +1336,17 @@ h1 {
 }
 
 .social-links a {
+  gap: 0.5rem;
   min-height: 44px;
   color: var(--cream);
   padding: 0.62rem 0.9rem;
+}
+
+.social-logo {
+  width: 1.15rem;
+  height: 1.15rem;
+  flex: 0 0 auto;
+  fill: currentColor;
 }
 
 .footer-bottom {
@@ -1450,7 +1468,8 @@ h1 {
   }
 
   .home-hero {
-    grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
+    grid-template-columns: minmax(0, 0.9fr) minmax(390px, 0.95fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
   }
 
   .featured-video-layout,
