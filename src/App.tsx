@@ -6,8 +6,8 @@ const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
 const productionOrigin = "https://hazina730.github.io";
 
 // TODO: Add analytics and conversion tracking once the production measurement stack is chosen.
-// TODO: Replace placeholder channel URL when the final Hazina YouTube handle exists.
-const youtubeUrl = "https://www.youtube.com/@Hazina";
+const youtubeUrl = "https://www.youtube.com/@hazinahazina-kids";
+const youtubeUploadsEmbedUrl = "https://www.youtube-nocookie.com/embed/videoseries?list=UUOyywF-5ihBwosB-L63nYeQ";
 // TODO: Replace placeholder social links with final Hazina profiles.
 const instagramUrl = "https://www.instagram.com/hazina";
 const tiktokUrl = "https://www.tiktok.com/@hazina";
@@ -637,20 +637,38 @@ function TeamCard({ name, role, bio }: { name: string; role: string; bio: string
 function VideoEmbedPlaceholder({
   title,
   caption,
+  embedUrl,
   large,
 }: {
   title: string;
   caption?: string;
+  embedUrl?: string;
   large?: boolean;
 }) {
-  // TODO: Replace this placeholder with the real YouTube embed URL when the pilot video is published.
+  // TODO: Replace the channel uploads embed with a specific pilot episode embed when the first video is published.
   return (
     <div className={large ? "video-block video-large" : "video-block"}>
-      <div className="video-frame" role="img" aria-label={`${title} video placeholder`}>
-        <div className="play-button" aria-hidden="true" />
-        <p>{title}</p>
-        <span>YouTube embed placeholder</span>
-      </div>
+      {embedUrl ? (
+        <div className="video-frame video-frame-embed">
+          <iframe
+            title={title}
+            src={embedUrl}
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          />
+          <a className="video-channel-link" href={youtubeUrl}>
+            Open Hazina Kids on YouTube
+          </a>
+        </div>
+      ) : (
+        <div className="video-frame" role="img" aria-label={`${title} video placeholder`}>
+          <div className="play-button" aria-hidden="true" />
+          <p>{title}</p>
+          <span>YouTube embed placeholder</span>
+        </div>
+      )}
       {caption && <p className="video-caption">{caption}</p>}
     </div>
   );
@@ -800,7 +818,7 @@ function HomePage() {
           </div>
         </div>
         <div className="hero-video-wrap reveal">
-          <VideoEmbedPlaceholder title="Hazina pilot episode" large />
+          <VideoEmbedPlaceholder title="Hazina Kids YouTube channel" embedUrl={youtubeUploadsEmbedUrl} large />
         </div>
       </section>
 
@@ -846,6 +864,7 @@ function HomePage() {
           <VideoEmbedPlaceholder
             title="Hello in all 42 Kenyan languages"
             caption="Watch our first episode - hello in all 42 Kenyan languages."
+            embedUrl={youtubeUploadsEmbedUrl}
             large
           />
           <div className="featured-copy">
@@ -942,7 +961,7 @@ function ChannelPage() {
       </PageHero>
       <Section title="New episodes, old treasures, bright screens.">
         <div className="channel-layout">
-          <VideoEmbedPlaceholder title="Latest Hazina video" large />
+          <VideoEmbedPlaceholder title="Latest Hazina Kids uploads" embedUrl={youtubeUploadsEmbedUrl} large />
           <aside className="subscriber-panel">
             <span>Subscriber count</span>
             {/* TODO: Replace placeholder subscriber count with a real YouTube API value. */}
@@ -1125,7 +1144,7 @@ function ContactPage() {
           <aside className="contact-details">
             <h2>Contact details</h2>
             <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
-            <a href={youtubeUrl}>YouTube placeholder</a>
+            <a href={youtubeUrl}>Hazina Kids on YouTube</a>
             <a href={instagramUrl}>Instagram placeholder</a>
             <a href={tiktokUrl}>TikTok placeholder</a>
           </aside>

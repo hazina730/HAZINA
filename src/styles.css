@@ -329,8 +329,47 @@ h1 {
   text-align: center;
 }
 
+.video-frame-embed {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  min-height: 0;
+  aspect-ratio: 16 / 9;
+  padding: 0;
+}
+
+.video-frame-embed iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.video-channel-link {
+  position: absolute;
+  right: 0.85rem;
+  bottom: 0.85rem;
+  border-radius: 999px;
+  background: rgba(13, 27, 42, 0.84);
+  color: var(--cream);
+  padding: 0.58rem 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.video-channel-link:hover,
+.video-channel-link:focus-visible {
+  background: var(--gold);
+  color: var(--navy);
+}
+
 .video-large .video-frame {
   min-height: clamp(290px, 46vw, 470px);
+}
+
+.video-large .video-frame-embed {
+  min-height: 0;
 }
 
 .play-button {
