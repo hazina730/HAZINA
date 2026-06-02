@@ -12,7 +12,7 @@ const youtubeUploadsEmbedUrl = "https://www.youtube-nocookie.com/embed/videoseri
 const instagramUrl = "https://www.instagram.com/hazina";
 const tiktokUrl = "https://www.tiktok.com/@hazina";
 // TODO: Replace placeholder email if the production inbox changes.
-const contactEmail = "hello@hazina.co.ke";
+const contactEmail = "hazinakids@gmail.com";
 
 const navItems = [
   { label: "Home", path: "/" },
