@@ -27,6 +27,7 @@ type ImpactCard = {
   role: "Parent" | "Creator" | "Partner";
   quote: string;
   initials: string;
+  image: "students" | "samburu" | "playing";
 };
 
 const impactCards: ImpactCard[] = [
@@ -34,16 +35,19 @@ const impactCards: ImpactCard[] = [
     role: "Parent",
     quote: "I want my child to hear our language before it disappears.",
     initials: "PA",
+    image: "playing",
   },
   {
     role: "Creator",
     quote: "Hazina gives Kenyan artists a platform to create stories, songs, and characters for our own children.",
     initials: "CR",
+    image: "samburu",
   },
   {
     role: "Partner",
     quote: "One episode can put one Kenyan language on screen for the next generation.",
     initials: "PT",
+    image: "students",
   },
 ];
 
@@ -63,9 +67,9 @@ type FormErrors = Record<string, string>;
 
 const pageMeta: Record<PageKey, { title: string; description: string }> = {
   home: {
-    title: "Hazina — Your Language. Your Treasure.",
+    title: "Hazina - Your Language. Your Treasure.",
     description:
-      "Kenya’s first animated cultural platform for children, sharing songs, stories, and rhymes in Kenya’s indigenous languages.",
+      "Kenya's first animated cultural platform for children, sharing songs, stories, and rhymes in Kenya's indigenous languages.",
   },
   about: {
     title: "About Hazina - Where Kenya's Children Find Themselves",
@@ -275,17 +279,13 @@ function Footer({ onNavigate }: { onNavigate: (path: string) => void }) {
     onNavigate(path);
   };
 
-  const backToTop = (event: MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
-    <footer className="footer">
+    <>
+      <section className="footer-cta-section" aria-label="Hazina call to action">
       <div className="footer-cta">
         <p>The treasures of our past must not be buried. They must be uploaded.</p>
         <div className="footer-cta-actions" aria-label="Footer calls to action">
-          <a className="footer-cta-button footer-cta-button-gold" href={youtubeUrl}>
+          <a className="footer-cta-button footer-cta-button-gold" href={youtubeUrl} target="_blank" rel="noopener noreferrer">
             Watch on YouTube
           </a>
           <a className="footer-cta-button" href={getInternalHref("/partners")} onClick={(event) => go("/partners", event)}>
@@ -293,7 +293,9 @@ function Footer({ onNavigate }: { onNavigate: (path: string) => void }) {
           </a>
         </div>
       </div>
+      </section>
 
+      <footer className="footer">
       <div className="footer-inner">
         <section className="footer-brand" aria-label="Hazina">
           <a className="footer-wordmark" href={getInternalHref("/")} onClick={(event) => go("/", event)}>
@@ -318,15 +320,15 @@ function Footer({ onNavigate }: { onNavigate: (path: string) => void }) {
             {contactEmail}
           </a>
           <div className="social-links" aria-label="Social links">
-            <a href={youtubeUrl} aria-label="Hazina Kids on YouTube">
+            <a href={youtubeUrl} target="_blank" rel="noopener noreferrer" aria-label="Hazina Kids on YouTube">
               <SocialLogo type="youtube" />
               <span>YouTube</span>
             </a>
-            <a href={instagramUrl} aria-label="Hazina on Instagram">
+            <a href={instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Hazina on Instagram">
               <SocialLogo type="instagram" />
               <span>Instagram</span>
             </a>
-            <a href={tiktokUrl} aria-label="Hazina on TikTok">
+            <a href={tiktokUrl} target="_blank" rel="noopener noreferrer" aria-label="Hazina on TikTok">
               <SocialLogo type="tiktok" />
               <span>TikTok</span>
             </a>
@@ -342,11 +344,40 @@ function Footer({ onNavigate }: { onNavigate: (path: string) => void }) {
       <div className="footer-bottom">
         <p>&copy; {new Date().getFullYear()} Hazina.</p>
         <p>Built for Kenya's children, languages, and future.</p>
-        <a href="#main-content" onClick={backToTop}>
-          Back to top ↑
-        </a>
+        <p className="footer-credits">
+          Background photos:{" "}
+          <a
+            href="https://commons.wikimedia.org/wiki/File:Kapsabet_Highlands_Primary_School_Students.jpg"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            primary students
+          </a>{" "}
+          ,{" "}
+          <a href="https://commons.wikimedia.org/wiki/File:Kenya_class.jpg" target="_blank" rel="noopener noreferrer">
+            classroom
+          </a>
+          ,{" "}
+          <a
+            href="https://commons.wikimedia.org/wiki/File:A_girl_and_two_boys_compete_for_the_ball.jpg"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            children playing
+          </a>
+          , and{" "}
+          <a
+            href="https://commons.wikimedia.org/wiki/File:Kenyan_Samburu_children_in_a_classroom.jpg"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Samburu classroom
+          </a>
+          , via Wikimedia Commons.
+        </p>
       </div>
-    </footer>
+      </footer>
+    </>
   );
 }
 
@@ -396,7 +427,7 @@ function Button({
         className={className}
         href={href}
         target={external ? "_blank" : undefined}
-        rel={external ? "noreferrer" : undefined}
+        rel={external ? "noopener noreferrer" : undefined}
       >
         {children}
       </a>
@@ -445,15 +476,17 @@ function PageHero({
   eyebrow,
   title,
   copy,
+  background = "students",
   children,
 }: {
   eyebrow?: string;
   title: string;
   copy: string;
+  background?: "students" | "classroom";
   children?: ReactNode;
 }) {
   return (
-    <section className="page-hero pattern-field">
+    <section className={`page-hero pattern-field hero-bg-${background}`}>
       <div className="page-hero-inner reveal">
         {eyebrow && <p className="eyebrow gold-text">{eyebrow}</p>}
         <h1>{title}</h1>
@@ -540,7 +573,7 @@ function ImpactStoryCard({
 
   return (
     <motion.article
-      className={isFront ? "impact-card is-front" : "impact-card"}
+      className={`impact-card impact-card-${card.image}${isFront ? " is-front" : ""}`}
       drag={isFront ? "x" : false}
       dragConstraints={{ left: 0, right: 0 }}
       dragElastic={0.65}
@@ -693,7 +726,7 @@ function VideoEmbedPlaceholder({
               allowFullScreen
             />
           </div>
-          <a className="video-channel-link" href={youtubeUrl}>
+          <a className="video-channel-link" href={youtubeUrl} target="_blank" rel="noopener noreferrer">
             Watch on Hazina Kids YouTube
           </a>
         </div>
@@ -742,7 +775,8 @@ function ContactForm({
       return;
     }
 
-    // TODO: Connect this placeholder handler to an email, CRM, or form service.
+    // TODO: Replace this mailto fallback with an email, CRM, or form service.
+    window.location.href = buildMailtoHref(title, fields, values);
     setStatus("success");
     setValues(initialState);
   };
@@ -814,6 +848,18 @@ function ContactForm({
   );
 }
 
+function buildMailtoHref(title: string, fields: FieldConfig[], values: FormState) {
+  const body = fields
+    .map((field) => `${field.label}: ${values[field.name]?.trim() ?? ""}`)
+    .join("\n");
+  const params = new URLSearchParams({
+    subject: `Hazina enquiry: ${title}`,
+    body,
+  });
+
+  return `mailto:${contactEmail}?${params.toString()}`;
+}
+
 function validateFields(fields: FieldConfig[], values: FormState) {
   const errors: FormErrors = {};
   fields.forEach((field) => {
@@ -838,22 +884,24 @@ function validateFields(fields: FieldConfig[], values: FormState) {
 function HomePage() {
   return (
     <>
-      <section className="home-hero pattern-field">
-        <div className="home-hero-content reveal">
-          <p className="eyebrow gold-text">Animated. Cultural. Yours.</p>
-          <h1>Your language. Your treasure.</h1>
-          <p>Kenya's first animated cultural platform for children - in their own languages.</p>
-          <div className="hero-actions">
-            <Button href={youtubeUrl} variant="gold" external>
-              Watch on YouTube
-            </Button>
-            <Button href={getInternalHref("/partners")} variant="outline">
-              Partner With Us
-            </Button>
+      <section className="home-hero pattern-field hero-bg-students">
+        <div className="home-hero-inner">
+          <div className="home-hero-content reveal">
+            <p className="eyebrow gold-text">Animated. Cultural. Yours.</p>
+            <h1>Your language. Your treasure.</h1>
+            <p>Kenya's first animated cultural platform for children - in their own languages.</p>
+            <div className="hero-actions">
+              <Button href={youtubeUrl} variant="gold" external>
+                Watch on YouTube
+              </Button>
+              <Button href={getInternalHref("/partners")} variant="outline">
+                Partner With Us
+              </Button>
+            </div>
           </div>
-        </div>
-        <div className="hero-video-wrap reveal">
-          <VideoEmbedPlaceholder title="Hello From Every Corner of Kenya" embedUrl={youtubeUploadsEmbedUrl} large />
+          <div className="hero-video-wrap reveal">
+            <VideoEmbedPlaceholder title="Hello From Every Corner of Kenya" embedUrl={youtubeUploadsEmbedUrl} large />
+          </div>
         </div>
       </section>
 
@@ -928,6 +976,7 @@ function AboutPage() {
         eyebrow="Where Kenya's children find themselves."
         title="The story behind Hazina"
         copy="Hazina began with a child, a tablet, a grandmother's voice, and a question Kenya could no longer postpone."
+        background="classroom"
       />
       <Section eyebrow="The story" title="Why not one for Kinza?">
         <div className="narrative">
@@ -989,6 +1038,7 @@ function ChannelPage() {
         eyebrow="The African Century, uploaded."
         title="Watch Hazina"
         copy="All Hazina content lives on our YouTube channel. Subscribe to be notified every time a new episode drops."
+        background="students"
       >
         <Button href={youtubeUrl} variant="gold" external>
           Subscribe on YouTube
@@ -1041,6 +1091,7 @@ function CreatorsPage() {
         eyebrow="Built by Kenyan artists, for Kenyan children."
         title="Create with Hazina"
         copy="Hazina commissions original animated episodes, songs, stories, and rhymes - and pays creators from day one."
+        background="students"
       />
       <Section>
         <div className="split-layout">
@@ -1072,10 +1123,10 @@ function CreatorsPage() {
       <Section title="Expression of interest">
         <ContactForm
           title="Tell us what you create"
-          fields={creatorFields}
-          submitLabel="Submit interest"
-          successMessage="Thank you. Your creator interest has been recorded locally for now."
-        />
+            fields={creatorFields}
+            submitLabel="Submit interest"
+            successMessage="Thank you. Your email app should open with your creator interest ready to send."
+          />
       </Section>
     </>
   );
@@ -1102,6 +1153,7 @@ function PartnersPage() {
         eyebrow="Professional, credible, warm."
         title="Partner with Hazina"
         copy="Hazina is a social enterprise seeking founding partners to help launch Kenya's first children's cultural platform."
+        background="classroom"
       >
         <Button href={`mailto:${contactEmail}`} variant="gold">
           Email Hazina
@@ -1145,10 +1197,10 @@ function PartnersPage() {
       <Section tone="white" title="Partnership enquiry">
         <ContactForm
           title="Start the conversation"
-          fields={partnerFields}
-          submitLabel="Send enquiry"
-          successMessage="Thank you. Your partnership enquiry has been recorded locally for now."
-        />
+            fields={partnerFields}
+            submitLabel="Send enquiry"
+            successMessage="Thank you. Your email app should open with your partnership enquiry ready to send."
+          />
       </Section>
     </>
   );
@@ -1167,6 +1219,7 @@ function ContactPage() {
         eyebrow="Talk to Hazina"
         title="We would love to hear from you."
         copy="Whether you are a creator, a partner, a parent, or just someone who believes in what we are doing."
+        background="students"
       />
       <Section>
         <div className="contact-layout">
@@ -1174,14 +1227,20 @@ function ContactPage() {
             title="Send a message"
             fields={contactFields}
             submitLabel="Submit"
-            successMessage="Thank you. Your message has been recorded locally for now."
+            successMessage="Thank you. Your email app should open with your message ready to send."
           />
           <aside className="contact-details">
             <h2>Contact details</h2>
             <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
-            <a href={youtubeUrl}>Hazina Kids on YouTube</a>
-            <a href={instagramUrl}>Instagram placeholder</a>
-            <a href={tiktokUrl}>TikTok placeholder</a>
+            <a href={youtubeUrl} target="_blank" rel="noopener noreferrer">
+              Hazina Kids on YouTube
+            </a>
+            <a href={instagramUrl} target="_blank" rel="noopener noreferrer">
+              Hazina on Instagram
+            </a>
+            <a href={tiktokUrl} target="_blank" rel="noopener noreferrer">
+              Hazina on TikTok
+            </a>
           </aside>
         </div>
       </Section>

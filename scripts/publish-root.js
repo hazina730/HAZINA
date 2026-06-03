@@ -13,6 +13,9 @@ copyFileSync(resolve("dist/sitemap.xml"), resolve("sitemap.xml"));
 rmSync(resolve("assets"), { recursive: true, force: true });
 cpSync(resolve("dist/assets"), resolve("assets"), { recursive: true });
 
+rmSync(resolve("images"), { recursive: true, force: true });
+cpSync(resolve("dist/images"), resolve("images"), { recursive: true });
+
 for (const route of routes) {
   rmSync(resolve(route), { recursive: true, force: true });
   mkdirSync(resolve(route), { recursive: true });
